@@ -1,0 +1,235 @@
+/* TAD Arboles binarios de búsqueda
+
+parámetro ELEM=<
+usa BOOLEANOS, ELEM=
+operaciones
+        _<_ : elemento elemento -> bool
+        _>_ : elemento elemento -> bool
+variables
+        x,y,z : elemento
+ecuaciones
+        x < x          = falso                       {antirreflexidad}
+        x < z          = cierto <= x < y  and  y < z {transitividad}
+        x < y or y < x = cierto <= x != y            {totalidad}
+fparámetro
+
+parámetro ELEM=
+usa BOOLEANOS
+tipos elemento
+operaciones
+        _==_ : elemento elemento -> bool
+        _!=_ : elemento elemento -> bool
+variables
+        x,y : elemento
+ecuaciones
+        (x==y) = cierto <= x=y
+        x=y <= (x==y) = cierto
+        x != y = no (x==y)
+fparámetro
+
+especificación ARBOLES-BINARIOS-DE-BÚSQUEDA[ELEM=<]
+usa BOOLEANOS
+tipos arbol-bb
+operaciones
+        abb_vacio    :                            ->  arbol-bb {constructora}
+        plantar      : arbol-bb elemento arbol-bb ->p arbol-bb {constructora}
+        insertar     : elemento arbol-bb          ->  arbol-bb
+        esta         : elemento arbol-bb          ->  bool
+        minimo       : arbol-bb                   ->p elemento
+        maximo       : arbol-bb                   ->p elemento
+        eliminar     : elemento arbol-bb          ->  arbol-bb
+        es_abb_vacio : arbol-bb                   ->  bool
+variables
+        e,f : elemento
+        iz,dr : arbol-bb
+ecuaciones
+        plantar(iz,e,dr) = error <= no (es_abb_vacio(iz) or e > maximo(iz)) or
+                                    no (es_abb_vacio(dr) or e < minimo(dr))
+        insertar(e, abb_vacio)        = plantar(abb_vacio, e, abb_vacio)
+        insertar(e, plantar(iz,e,dr)) = plantar(iz,e,dr)
+        insertar(e, plantar(iz,f,dr)) = plantar(insertar(e,iz),f,dr) <= e < f
+        insertar(e, plantar(iz,f,dr)) = plantar(iz,f,insertar(e,dr)) <= e > f
+        esta(e,abb_vacio)               = falso
+        esta(e,plantar(iz,e,dr))        = cierto
+        esta(e,plantar(iz,f,dr))        = esta(e,iz) <= e < f
+        esta(e,plantar(iz,f,dr))        = esta(e,dr) <= e > f
+        minimo(abb_vacio)               = error
+        minimo(plantar(abb_vacio,e,dr)) = e
+        minimo(plantar(iz,e,dr))        = maximo(dr) <= no es_abb_vacio(dr)
+        eliminar(e,abb_vacio)           = abb_vacio
+        eliminar(e,plantar(iz,e,abb_vacio)) = iz
+        eliminar(e,plantar(abb_vacio,e,dr)) = dr
+        eliminar(e,plantar(iz,e,dr)) = plantar(iz,minimo(dr),eliminar(minimo(dr),dr)) 
+                                       <= no es_abb_vacio(iz) || no es_abb_vacio(dr)
+        eliminar(e,plantar(iz,f,dr)) = plantar(eliminar(e,iz), f,dr) <= e < f
+        eliminar(e,plantar(iz,f,dr)) = plantar(iz,f,eliminar(e,dr)) <= e > f
+        es_abb_vacio(abb_vacio) = cierto
+        es_abb_vacio(plantar(iz,e,dr)) = falso
+fespecificación
+*/
+
+#include <iostream>
+
+using namespace std;
+
+template <typename e>
+struct nodo_abb
+{
+        e dato;
+        nodo_abb<e> *iz = NULL;
+        nodo_abb<e> *dr = NULL;
+};
+
+template <typename e>
+using ABB = nodo_abb<e> *;
+
+template <typename e>
+ABB<e> abb_vacio()
+{
+        return (NULL);
+}
+
+template <typename e>
+bool es_abb_vacio(ABB<e> arb)
+{
+        return (arb==NULL);
+}
+
+template <typename e>
+ABB<e> plantar(ABB<e> iz, e elemento, ABB<e> dr)
+{
+        ABB<e> arb;
+
+        arb = new nodo_abb<e>;
+        arb->dato = elemento;
+        arb->iz = iz;
+        arb->dr = dr;
+        return arb;
+}
+
+
+template <typename e>
+void  insertar(ABB<e> &arb, e elemento) // e, no <e>
+{
+        if (es_abb_vacio(arb))
+        {
+                arb = new nodo_abb<e>;
+                arb->dato = elemento;
+                //arb->iz = NULL;
+                //arb->dr = NULL;
+        }
+        else if (arb->dato < elemento) // utilizar solo <= (no >=)
+                insertar(arb->dr, elemento);
+        else if(!(arb->dato == elemento)) // para no incluir los repetidos
+                insertar(arb->iz, elemento);
+}
+
+
+template <typename e>
+bool esta(e elemento, ABB<e> arb)
+{
+        if (es_abb_vacio(arb))
+                return(false);
+        else
+        {
+                if (elemento == arb->dato)
+                        return (true);
+                else if (elemento > arb->dato)
+                        esta(elemento, arb->dr);
+                else
+                        esta(elemento, arb->iz);
+        }
+}
+
+// minimo de un arbol binario de búsqueda es el elemento más a la izquierda
+template <typename e>
+e minimo(ABB<e> arb)
+{
+        //if (es_abb_vacio(arb))
+        if (es_abb_vacio(arb->iz))
+                return (arb->dato);
+        else
+                return (minimo(arb->iz));
+}
+
+// mánimo de un arbol binario de búsqueda es el elemento más a la derecha
+template <typename e>
+e maximo(ABB<e> arb)
+{
+        //if (es_abb_vacio(arb))
+        if (es_abb_vacio(arb->dr))
+                return (arb->dato);
+        else
+                return (maximo(arb->dr));
+}
+
+template <typename e>
+void liberar(ABB<e> &arb)
+{
+        if (!es_abb_vacio(arb))
+        {
+                liberar(arb->iz);
+                liberar(arb->dr);
+                delete arb;
+        }
+}
+
+template <typename e>
+ABB<e> eliminar(e elemento, ABB<e> arb)
+{
+        if (!es_abb_vacio(arb))
+        {
+                if (arb->dato == elemento)
+                {
+                        if (es_abb_vacio(arb->iz))
+                                arb = arb->dr;
+                        else if (es_abb_vacio(arb->dr))
+                                arb = arb->iz;
+                        else
+                                arb = plantar(arb->iz, minimo(arb->dr), eliminar(minimo(arb->dr), arb->dr)); 
+                }
+                else if (elemento < arb->dato)
+                        arb = plantar(eliminar(elemento, arb->iz), arb->dato, arb->dr);
+                else if (elemento > arb->dato)
+                        arb = plantar(arb->iz, arb->dato, eliminar(elemento, arb->dr));
+        }
+        return (arb);
+}
+
+
+template <typename e>
+void printBT(const string& prefix, ABB<e> node, bool isLeft)
+{
+    if(!es_abb_vacio(node))
+    {
+        cout << prefix;
+        cout << (isLeft ? "iz├──" : "dr└──" );
+        cout << node->dato << endl;
+        printBT( prefix + (isLeft ? "│   " : "    "), node->iz, true);
+        printBT( prefix + (isLeft ? "│   " : "    "), node->dr, false);
+    }
+}
+
+
+int main()
+{
+    ABB<int> a;
+    ABB<int> aux;
+    
+    a = abb_vacio<int>(); //llamar indicando el tipo
+    insertar(a, 5);
+    insertar(a,3);
+    insertar(a, 1);
+    insertar(a,2);
+    insertar(a,6);
+    insertar(a,7);
+    insertar(a,1);
+
+    printBT("", a, false);
+
+    cout << "Eliminamos la raiz" << endl;
+    aux = eliminar(5,a);
+    printBT("", aux, false);
+    return (0);
+}
+
