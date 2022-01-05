@@ -68,6 +68,12 @@ ecuaciones
 fespecificación
 */
 
+// Los árboles binarios de búsqueda son un caso particular de los arboles binarios.
+// Los árboles binarios de búsqueda al igual que los binarios tienen dos hijos pero 
+// en este caso el hijo izquierdo tienen valores menores que la clave de la raiz y el hijo
+// derecho tiene valores mayores
+
+
 #include <iostream>
 
 using namespace std;
@@ -88,6 +94,8 @@ ABB<e> abb_vacio()
 {
         return (NULL);
 }
+// O(cte) : coste constante
+
 
 template <typename e>
 bool es_abb_vacio(ABB<e> arb)
@@ -106,6 +114,7 @@ ABB<e> plantar(ABB<e> iz, e elemento, ABB<e> dr)
         arb->dr = dr;
         return arb;
 }
+// O(cte) : coste constante (no hace una copia)
 
 
 template <typename e>
@@ -123,7 +132,12 @@ void  insertar(ABB<e> &arb, e elemento) // e, no <e>
         else if(!(arb->dato == elemento)) // para no incluir los repetidos
                 insertar(arb->iz, elemento);
 }
-
+/* O(n) con n la altura del arbol : coste proporcinal a la altura del árbol (llama recursivamente a los hijos)
+ en el peor de los casos, cuando todos los nodos tienen solo un hijo no vacío, las llamadas recursivas recorren
+ todo el arbol, luego el coste es lineal con respecto al número de elementos del árbol
+ Para evitar este caso degenerado existen implementaciones que mantienen el arbol equilibrado.
+ Así la altura de un arbol equilibrado de n nodos está en O(log n)
+*/
 
 template <typename e>
 bool esta(e elemento, ABB<e> arb)
@@ -186,7 +200,9 @@ ABB<e> eliminar(e elemento, ABB<e> arb)
                         else if (es_abb_vacio(arb->dr))
                                 arb = arb->iz;
                         else
+                        {
                                 arb = plantar(arb->iz, minimo(arb->dr), eliminar(minimo(arb->dr), arb->dr)); 
+                        }
                 }
                 else if (elemento < arb->dato)
                         arb = plantar(eliminar(elemento, arb->iz), arb->dato, arb->dr);
@@ -196,6 +212,56 @@ ABB<e> eliminar(e elemento, ABB<e> arb)
         return (arb);
 }
 
+template <typename e>
+void eliminar2(e elemento, ABB<e> &arb)
+{
+        ABB<e> aux;
+        if (!es_abb_vacio(arb))
+        {
+                if (arb->dato == elemento)
+                {
+                        if (es_abb_vacio(arb->iz))
+                        {
+                                aux = arb;
+                                arb = arb->dr;
+                                //liberar(aux);
+                        }
+                        else if (es_abb_vacio(arb->dr))
+                        {
+                                aux = arb;
+                                arb = arb->iz;
+                                //liberar(aux);
+                        }
+                        else
+                        {
+                                eliminar_aux(arb,arb->dr);
+                                //arb = plantar(arb->iz, minimo(arb->dr), eliminar2(minimo(arb->dr), arb->dr)); 
+                        }
+                }
+                else if (elemento < arb->dato)
+                        eliminar2(elemento, arb->iz);
+                        //arb = plantar(eliminar2(elemento, arb->iz), arb->dato, arb->dr);
+                else if (elemento > arb->dato)
+                        eliminar2(elemento, arb->dr);
+                        //arb = plantar(arb->iz, arb->dato, eliminar2(elemento, arb->dr));
+        }
+}
+
+template <typename e>
+void eliminar_aux(ABB<e> a, ABB<e> &b)
+{
+        ABB<e> aux;
+
+        if (!es_abb_vacio(b))
+                eliminar_aux(a,b->iz);
+        else
+        {
+                a->dato = b->dato;
+                aux = b;
+                b = b->dr;
+                liberar(aux);
+        }
+}
 
 template <typename e>
 void printBT(const string& prefix, ABB<e> node, bool isLeft)
@@ -228,7 +294,7 @@ int main()
     printBT("", a, false);
 
     cout << "Eliminamos la raiz" << endl;
-    aux = eliminar(5,a);
+    eliminar2(5,a);
     printBT("", aux, false);
     return (0);
 }

@@ -1,7 +1,7 @@
 /* TAD: PILAS
 
 especificación PILAS[ELEM]
-usa BOOLEANOS
+usa BOOLEANOS, NATURALES
 tipos pila
 operaciones
         pila_vacía    :               -> pila {constructora}
@@ -9,6 +9,12 @@ operaciones
         desapilar     : pila          ->p pila
         cima          : pila          ->p elemento
         es_pila_vacia : pila          -> bool
+        profundidad   : pila          -> nat
+        fondo         : pila          ->p elemento
+        inversa       : pila          -> pila
+        duplicar      : pila          -> pila
+        concatenar    : pila pila     -> pila
+        entremezclar  : pila pila     -> pila
 variables
         e : elemento
         p : pila
@@ -92,7 +98,7 @@ void mostrar(pila<elemento>* p)
     }
 }
 
-int main()
+/*int main()
 {
     pila<int>* p;
     int i;
@@ -118,4 +124,4 @@ int main()
     cout << "---------------" << endl;
     liberar(p);
     return(0);
-}
+}*/
