@@ -15,9 +15,11 @@ operaciones
         duplicar      : pila          -> pila
         concatenar    : pila pila     -> pila
         entremezclar  : pila pila     -> pila
+operaciones privadas
+        apilar_inversa: pila pila     -> pila
 variables
-        e : elemento
-        p : pila
+        e,f : elemento
+        p,q : pila
 ecuaciones
         desapilar(pila_vacía) = error
         desapilar(apilar(e,p)) = p
@@ -25,6 +27,23 @@ ecuaciones
         cima(apilar(e,p)) = e
         es_pila_vacia(pila_vacia)  = cierto
         es_pila_vacia(apilar(e,p)) = falso
+
+        profundidad(pila_vacia) = 0
+        profundidad(apilar(e,p)) = 1 + profundidad(p)
+        fondo(pila_vacia) = error
+        fondo(apilar(e,p)) = e <= es_pila_vacia(p)
+        fondo(apilar(e,p)) = e <= !es_pila_vacia(p)
+        apilar_inversa(pila_vacia,p) = p
+        apilar_inversa(apilar(e,p),q) = aplicar_inversa(p,apilar(e,q))
+        inversa(p) = apilar_inversa(p,pila_vacia)
+        duplicar(pila_vacia) = pila_vacia
+        duplicar(apilar(e,p)) = apilar(e, apilar(e,duplicar(p)))
+        concatenar(p,pila_vacia) = p
+        concatenar(p, apilar(e,q)) = apilar(e, concatenar(p,q))
+        concatenar(p,q) = apilar_inversa(inversa(q),p)
+        entremezclar(pila_vacia, pila_vacia) = pila_vacia
+        entremezclar(apilar(e,p),q) = apilar(e,entremezclar(p,q)) <= profundidad(p) + 1 > profundidad(q)
+        entremezclar(p,apilar(e,q)) = apilar(e,entremezclar(p,q)) <= profundidad(p) <= profunidad(q) + 1
 fespecificación
 */
 
@@ -40,10 +59,9 @@ struct pila
 };
 
 template <typename elemento>
-pila<elemento>* pila_vacia(pila<elemento>* &p)
+pila<elemento>* pila_vacia()
 {
-    p = NULL;
-    return p;
+    return (NULL);
 }
 
 template <typename elemento>
@@ -98,30 +116,29 @@ void mostrar(pila<elemento>* p)
     }
 }
 
-/*int main()
+template <typename e>
+pila<e>* copiar_pila(pila<e>* p)
 {
-    pila<int>* p;
-    int i;
+    pila<e> *aux = new pila<e>;
+    pila<e> *s;
+    pila<e> *t;
+    pila<e> *r;
 
-    p = pila_vacia(p);
-    cout << "Introduce un número: ";
-    cin >> i;
-    while (i > 0)
+    if (es_pila_vacia(p))
+        return (NULL);
+    r = p;
+    aux = pila_vacia<e>();
+    aux->dato = r->dato;
+    s = aux; // para no mover el puntero de aux
+    while(r->sig != NULL)
     {
-        apilar(i,p);
-        i--;
+        r = r->sig;
+        t = new pila<e>; // para crear un nuevo nodo e ir enlazando los sig nodos
+        t = NULL;
+        t->dato = r->dato;
+        s->sig = t;
+        s = t;
     }
-    cout << "La pila es: " << endl;
-    mostrar(p);
-    cout << "---------------" << endl;
-    desapilar(p);
-    cout << "Si despilamos un elemento: " << endl;
-    mostrar(p);
-    cout << "---------------" << endl;
-    cout << "Si apilamos el número 11" << endl;
-    apilar(11, p);
-    mostrar(p);
-    cout << "---------------" << endl;
-    liberar(p);
-    return(0);
-}*/
+    s->sig = NULL;
+    return (aux);
+}
