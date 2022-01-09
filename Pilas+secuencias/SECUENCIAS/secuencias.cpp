@@ -1,3 +1,4 @@
+
 // SECUENCIA = estructura lineal con un punto de interés donde se realizan las modificaciones
 // y las consultas. 
 // La especificación está realizada a partir de un par de pilas que contienen la parte de

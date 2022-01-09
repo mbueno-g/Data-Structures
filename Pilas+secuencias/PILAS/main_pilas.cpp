@@ -26,9 +26,9 @@ int main()
     mostrar(p);
     cout << "---------------" << endl;
     cout << "Copia de la pila: " << endl;
-    pila<int> *c;
-    c = copiar_pila(p);
-    //cout << "La profundidad es: " << profundidad(p) << endl;
+    cout << "La profundidad es: " << profundidad(p) << endl;
+    //pila<int> *c;
+    //c = copiar_pila(p);
     //liberar(p);
     //mostrar(c);
     return(0);

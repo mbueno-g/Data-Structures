@@ -116,6 +116,22 @@ void mostrar(pila<elemento>* p)
     }
 }
 
+// no hace falta un auxiliar para recorrer la pila
+template <typename elemento>
+int profundidad(pila<elemento>* p)
+{
+    int cont;
+
+    cont = 0;
+    while (!es_pila_vacia(p))
+    {
+        cont++;
+        p = p->sig;
+    }
+    return (cont);
+}
+
+
 template <typename e>
 pila<e>* copiar_pila(pila<e>* p)
 {
