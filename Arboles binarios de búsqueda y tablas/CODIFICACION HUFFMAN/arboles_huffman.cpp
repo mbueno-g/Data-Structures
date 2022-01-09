@@ -36,9 +36,26 @@ variables
         cod : codigoh
         t,t1 : tabla[clave,codigo_h]
 ecuaciones
+        plantar(iz,dr) = error <= ! es_vacio(cto_elementos(iz), cto_elementos(dr))
+        cto_elementos(hoja(c,f)) = aniadir(c,cto_vacio)
+        cto_elementos(plantar(iz,dr)) = union(cto_elementos(iz), cto_elementos(dr))
+        pre_cero(insertar_tabla(c,v,t)) = insertar(c, 0:consultar(c,insertar_tabla(c,v,t))),eliminar(c,t))
+        pre_uno(insertar_tabla(c,v,t)) = insertar(c, 1:consultar(c,insertar_tabla(c,v,t))),eliminar(c,t))
+        combinar_tablas(tabla_vacia,t1) = t1
+        combinar_tablas(insertar_tabla(c,v,t),t1) = insertar_tabla(c,v,combinar_tablas(t,t1))
+        tabla_codigos(plantar(izdo,dcho)) = combinar_tablas(pre_cero(izdo),pre_uno(dcho))
+        decodifica_elem(cod,hoja(c,f)) = c
+        decodifica_elem(codigo_vacío,plantar(izdo,dcho)) = error
+        decodifica_elem(0:cod,plantar(izdo,dcho)) = decodifica_elem(cod,izdo)
+        decodifica_elem(1:cod,plantar(izdo,dcho)) = decodifica_elem(cod,dcho)
+        resto_dec(cod,hoja(c,f)) = cod
+        resto_dec(codigo_vacío,plantar(izdo,dcho)) = error
+        resto_dec(0:cod,plantar(izdo,dcho)) = resto_dec(cod,izdo)
+        resto_dec(1:cod,plantar(izdo,dcho)) = resto_dec(cod,dcho)
+        decodifica(cod,a) = decodifica_elem(cod,a) + decodifica(resto_dec(cod,a),a)
+        decodifica(codigo_vacío,a) = lista_vacía()
 */
 
-//include "tabla_frecuencias.cpp"
 #include <iostream>
 #include <queue>
 #include <vector>
@@ -325,8 +342,6 @@ void liberar(arbol_h *a)
         }
 }
 
-
-
 /*vector<bool> file_to_vector_bool(string file_name){
     long num_bits;
     vector<bool> result;
@@ -355,8 +370,6 @@ int main()
         string mensaje;
         cout << "Introduce un mensaje: " << endl;
         getline(cin,mensaje);
-
-        //mensaje = "aaaatablabbbbbbbccccccccccccdddddddddddddeeeeeeeeeeeeeeeefffffffffffffffffffffffffffffffffffffffffffff";
         cout << "El mensaje es: " << mensaje << endl;
 
         cout << "La tabla de frecuencias es: " << endl;
