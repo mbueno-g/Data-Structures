@@ -18,7 +18,7 @@ struct nodo
 // raiz . posicion 0
 // hijo_iz . posicion 2i+1
 // hijo_dr . posicion 2i+2
-// padre . i//2 -1
+// padre . i//2
 
 /* Como un montículo es un arbol binario semicompleto no vamos a encontrar
 huecos en el vector*/
@@ -67,7 +67,7 @@ void aniadir(cp<T> &cola, T elemento)
         flotar(cola, cola.ultimo);
     }
 }
-// O(log cola.ultimo)
+// O(log cola.ultimo):ya que la altura de un arbol semicompleto es log(n) siendo n el número de nodos
 
 template <typename T>
 void hundir(cp<T> &cola)
@@ -95,8 +95,6 @@ void hundir(cp<T> &cola)
     }
 }
 
-
-
 template <typename T>
 void eliminar_max(cp<T> & cola)
 {
@@ -121,11 +119,11 @@ int main()
 
     cp_vacia<int>(cola);
     aniadir(cola, 70);
-    aniadir(cola, 60);
     aniadir(cola, 50);
+    aniadir(cola, 60);
     aniadir(cola, 80);
-    /*aniadir(cola, 90);
-    aniadir(cola, 40);
+    aniadir(cola, 100);
+    /*aniadir(cola, 40);
     aniadir(cola, 30);
     eliminar_max(cola);*/
     
