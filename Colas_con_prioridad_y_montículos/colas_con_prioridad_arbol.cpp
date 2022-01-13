@@ -115,25 +115,6 @@ contiene el máximo de todos los elementos en el árbol
 */
 
 
-template <typename T>
-void flotar(cp<T> &cola)
-{
-    //buscamos el elemento en el último nivel, más hacia la derecha
-    if (!es_monticulo(cola->iz))
-    {
-        flotar(cola->iz);
-        T aux = cola->iz->dato;
-        cola->iz->dato = cola->dato;
-        cola->dato = aux;
-    }
-    else if (!es_monticulo(cola->dr))
-    {
-        flotar(cola->dr);
-        T aux = cola->dr->dato;
-        cola->dr->dato = cola->dato;
-        cola->dato = aux;
-    }
-}
 
 template <typename T>
 void eliminar_max(cp<T> &cola)
@@ -164,70 +145,8 @@ void eliminar_max(cp<T> &cola)
         eliminar_max(cola->iz);
     }
 }
-
-
-/*template <typename T>
-void aniadir_max(cp<T> & cola, T elemento)
-{
-    if (es_cp_vacia(cola))
-    {
-        cola = new nodo<T>;
-        cola->dato = elemento;
-    }
-    else
-    {
-        if (es_cp_vacia(cola->iz))
-        {
-            aniadir_max(cola->iz, elemento);
-            if (cola->dato < cola->iz->dato)
-            {
-                T aux = cola->iz->dato;
-                cola->iz->dato = cola->dato;
-                cola->dato = aux;
-            }
-        }
-        else if (!es_cp_vacia(cola->iz) && es_cp_vacia(cola->dr))
-        {
-            aniadir_max(cola->dr, elemento);
-            if (cola->dato < cola->dr->dato)
-            {
-                T aux = cola->dr->dato;
-                cola->dr->dato = cola->dato;
-                cola->dato = aux;
-            }
-        }
-        if (!es_completo(cola->iz))
-        {
-            aniadir_max(cola->iz, elemento);
-            if (cola->dato < cola->iz->dato)
-            {
-                T aux = cola->iz->dato;
-                cola->iz->dato = cola->dato;
-                cola->dato = aux;
-            }
-        }
-        else if (!es_completo(cola))
-        {
-            aniadir_max(cola->dr, elemento);
-            if (cola->dato < cola->dr->dato)
-            {
-                T aux = cola->dr->dato;
-                cola->dr->dato = cola->dato;
-                cola->dato = aux;
-            }
-        }
-        else
-        {
-            aniadir_max(cola->iz, elemento);
-            if (cola->dato < cola->iz->dato)
-            {
-                T aux = cola->iz->dato;
-                cola->iz->dato = cola->dato;
-                cola->dato = aux;
-            }
-        }
-    }
-}*/
+//O(log n) : siendo log n la altura de un arbol semicompleto
+     
 
 template <typename T>
 void aniadir_max(cp<T> & cola, T elemento)
@@ -261,6 +180,7 @@ void aniadir_max(cp<T> & cola, T elemento)
         }
     }
 }
+//O(log n)
 
 template <typename e>
 void printBT(const string& prefix, cp<e> node, bool isLeft)
