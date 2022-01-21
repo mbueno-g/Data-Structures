@@ -32,6 +32,7 @@ void ordenar_burbuja(Secuencia<T> s)
             }
             insertar(anterior, s);
         }
+        cout << changed << endl;
         mostrar(s);
     }
 }
@@ -88,4 +89,122 @@ Secuencia<T> quicksort(Secuencia<T> s)
         liberar(mayores_ord);
         return (resultado);
     }
+}
+
+
+template <typename T>
+void pivotar(Secuencia<T> s, Nodo_sec<T>* inic, Nodo_sec<T> *fin, T pivote, Nodo_sec<T> * & ult_menor, Nodo_sec<T> * & ult_igual ){
+    ult_igual = inic;
+    ult_menor = inic;
+    Nodo_sec<T> * ult_mayor = inic;
+    Nodo_sec<T> * aux;
+    while(ult_mayor->sig != fin){
+        if(!(pivote<=ult_mayor->sig->dato)){
+            if(ult_mayor == ult_menor){//no hay mayores ni iguales
+              ult_menor = ult_menor->sig;
+              ult_igual = ult_menor->sig;
+              ult_mayor = ult_menor->sig;
+            }
+            else{
+              aux = ult_mayor->sig;
+              ult_mayor->sig = aux->sig;
+              aux->sig = ult_menor->sig;
+              if(ult_igual == ult_menor){//no hay iguales
+                ult_menor->sig = aux;
+                ult_menor = aux;
+                ult_igual = aux;
+              }
+              else{
+                ult_menor->sig = aux;
+                ult_menor = aux;
+              }
+          }
+        }
+        else if(!(ult_mayor->sig->dato<=pivote)){
+            ult_mayor = ult_mayor->sig;
+        }
+        else{
+          if(ult_mayor == ult_igual){//no hay mayores
+            ult_mayor = ult_mayor->sig;
+            ult_igual = ult_igual->sig;
+          }
+          else{
+          aux = ult_mayor->sig;
+          ult_mayor->sig = aux->sig;
+          aux->sig = ult_igual->sig;
+          ult_igual->sig = aux;
+          ult_igual = aux;
+          }
+        }
+    }
+}
+
+
+template <typename T>
+void pivotar(Secuencia<T> s, Nodo_sec<T>* inic, Nodo_sec<T> *fin, T pivote, Nodo_sec<T> * & ult_menor, Nodo_sec<T> * & ult_igual ){
+    ult_igual = inic;
+    ult_menor = inic;
+    Nodo_sec<T> * ult_mayor = inic;
+    Nodo_sec<T> * aux;
+    while(ult_mayor->sig != fin)
+    {
+        if(!(pivote<=ult_mayor->sig->dato))
+        {
+            if(ult_mayor == ult_menor)
+            {//no hay mayores ni iguales
+            ult_menor = ult_menor->sig;
+            ult_igual = ult_menor->sig;
+            ult_mayor = ult_menor->sig;
+            }
+            else
+            {
+                aux = ult_mayor->sig;
+                ult_mayor->sig = aux->sig;
+                aux->sig = ult_menor->sig;
+                if(ult_igual == ult_menor)
+                {//no hay iguales
+                ult_menor->sig = aux;
+                ult_menor = aux;
+                ult_igual = aux;
+                }
+                else
+                {
+                    ult_menor->sig = aux;
+                    ult_menor = aux;
+                }
+            }
+        }
+        else if(!(ult_mayor->sig->dato<=pivote))
+        {
+            ult_mayor = ult_mayor->sig;
+        }
+        else
+        {
+            if(ult_mayor == ult_igual)
+            {//no hay mayores
+                ult_mayor = ult_mayor->sig;
+                ult_igual = ult_igual->sig;
+            }
+            else{
+                aux = ult_mayor->sig;
+                ult_mayor->sig = aux->sig;
+                aux->sig = ult_igual->sig;
+                ult_igual->sig = aux;
+                ult_igual = aux;
+            }
+        }
+    }
+}
+
+
+template <typename T> // T debe tener definido el operador <=
+ //ordena la secuencia s
+void quick_sort_in_situ(Secuencia<T> s, Nodo_sec<T>* inic, Nodo_sec<T> *fin){
+ if(inic->sig!=fin){
+ Nodo_sec<T> *ult_menor, *ult_igual;
+ T p = inic->sig->dato;
+ pivotar(s,inic,fin,p,ult_menor,ult_igual);
+ quick_sort_in_situ(s,inic,ult_menor->sig);
+ quick_sort_in_situ(s,ult_igual,fin);
+ }
 }

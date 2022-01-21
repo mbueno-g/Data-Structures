@@ -41,7 +41,11 @@ ecuaciones
 fespecificación
 */
 
-#include "pilas_template.cpp"
+//#include "pilas_template.cpp"
+#include <iostream>
+
+using namespace std;
+
 
 const string FLECHA = "↓";
 

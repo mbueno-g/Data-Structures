@@ -194,3 +194,21 @@ void liberar(Abb<e> &arb)
                 delete arb;
         }
 }
+
+
+template <typename e>
+Abb<e> copiar(Abb<e> arb)
+{
+        Abb<e> *aux = new nodo_arb<e>;
+        if (es_arbol_vacio(arb))
+        {
+                aux = NULL;
+        }
+        else
+        {
+                aux->dato = arb->dato;
+                aux->dr = copiar(arb->dr); 
+                aux->iz = copiar(arb->iz);
+        }
+        return aux;
+}

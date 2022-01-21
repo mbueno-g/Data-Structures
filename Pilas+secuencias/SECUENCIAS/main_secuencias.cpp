@@ -34,9 +34,9 @@ int main()
     Secuencia<int> sec_ord;
     sec_ord = quicksort(sec);
     mostrar(sec_ord);
-    liberar(sec_ord);
+    //liberar(sec_ord);
     cout << "La secuencia ordenada por burbuja es " << endl;
-    sec_ord = sec; // no sirve de nada porque al ser una estructura tambien se actualiza sec
+    //sec_ord = sec; // no sirve de nada porque al ser una estructura tambien se actualiza sec
     ordenar_burbuja(sec_ord);
     liberar(sec);
     return 0;

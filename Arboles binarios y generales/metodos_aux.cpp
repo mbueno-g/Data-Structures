@@ -40,6 +40,8 @@ bool es_zurdo(Abb<e> arb)
     nodos_dr = num_nodos(arb->dr);
     return (nodos_iz > nodos_dr && es_zurdo(arb->iz) && es_zurdo(arb->dr));
 }
+// O(n^2)
+
 
 //distancia = longitud del único camino que conecta dos nodos
 //diámetro = distancia máxima sobre todos los pares de nodos

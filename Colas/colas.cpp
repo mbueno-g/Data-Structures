@@ -53,3 +53,88 @@ struct cola
         nodo_cola * ultimo = NULL;
 };
 
+cola cola_vacia(){
+	cola c;
+        //c.primero = NULL;
+        //c.ultimo = NULL;
+	return c;
+}
+
+bool esColaVacia(cola c) {
+    return (c.primero==NULL && c.ultimo==NULL);
+}
+
+
+void pedir_vez(elemento e, cola & c){
+	nodo_cola* aux=new nodo_cola;
+	aux->dato=e;
+	aux->sig=NULL;
+	if(c.primero==NULL){
+		c.primero=aux;
+	}
+	else{
+		(c.ultimo)->sig=aux;
+	}
+	c.ultimo=aux;
+}
+
+elemento primero(cola c){
+	return (c.primero)->dato;
+}
+
+void avanzar(cola & c){
+	nodo_cola* aux=new nodo_cola;
+	if(c.primero==NULL){
+		cout<<"Error. Cola vacía";
+		delete(aux);
+	}
+	else{
+		aux=c.primero;
+		c.primero=aux->sig;
+		if(c.primero==NULL){
+			c.ultimo=NULL;
+			delete(aux);
+		}
+	}
+}
+
+void mostrar_cola(cola c){
+	nodo_cola* aux;
+	aux = c.primero;
+	while (aux != NULL){
+		if ((aux->sig)==NULL){
+			cout<<aux->dato<<"."<<endl;
+		}
+		else{cout<<aux->dato<<", ";
+		}
+		
+		aux=aux->sig;
+	}
+	delete(aux);
+}
+
+int profundidad_cola(cola c){
+	nodo_cola* aux;
+	int contador=0;
+	aux= c.primero;
+	while(aux!=NULL){
+		contador++;
+		aux=aux->sig;
+	}
+	delete(aux);
+	return contador;
+}
+
+void liberar(cola & c){
+	nodo_cola* aux;//Esto reserva memoria que se habría que eliminar
+	c.ultimo=c.primero;
+	while ((c.ultimo->sig)!=NULL){
+		c.primero=(c.primero)->sig;
+		delete(c.ultimo);
+		c.ultimo=c.primero;
+	}
+	aux=c.primero;
+	c.primero=NULL;
+	c.ultimo=NULL;
+	delete(aux);
+}
